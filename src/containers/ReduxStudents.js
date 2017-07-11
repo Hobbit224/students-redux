@@ -5,15 +5,27 @@ import { bindActionCreators } from 'redux'
 
 import {connect} from 'react-redux'
 
-import SelectStudent from '../actions/SelectStudent'
+import SelectStudent from '../actions/SelectStudentAction'
+
+import Timer from '../actions/TimerAction'
 
 class ReduxStudents extends Component{
+
+	componentDidMount() {
+		setInterval(()=>{
+			this.props.timer
+		},1000)
+	}
+
 	render(){
 		// console.log(this.props.students)
 		var studentsArray = [];
 		this.props.students.map((student,index)=>{
 			studentsArray.push(
-				<li key={index}>
+				<li
+				key={index}
+				onClick={()=> {this.props.selectStudent(student)}}
+				>
 					{student}
 				</li>)
 		})
@@ -21,6 +33,10 @@ class ReduxStudents extends Component{
 			<div>
 				<h1>This is ReduxStudents</h1>
 				{studentsArray}
+				<hr />
+				{this.props.selectedStudent} is selected
+				<hr/>
+				{this.props.timerAction} is the current time
 			</div>
 			
 		)
@@ -30,13 +46,16 @@ class ReduxStudents extends Component{
 
 function mapStateToProps(state){
 	return{
-		students: state.students
+		students: state.students,
+		selectedStudent: state.selectedStudent,
+		timerAction: state.timer
 	}
 }
 
 function mapDispatchToProps(dispatch){
 	return bindActionCreators({
-		selectStudent: SelectStudent
+		selectStudent: SelectStudent,
+		timer: Timer
 	}, dispatch)
 }
 
